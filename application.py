@@ -18,7 +18,7 @@ db  = scoped_session(sessionmaker(bind=engine))
 #starting Page where you can choose to login or register
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", message="WELCOME")
 
 #if you choose Register you end up here with a form where you can fill in username and password
 @app.route("/register", methods=["POST"])
@@ -35,7 +35,7 @@ def success():
                 {"username": username, "password":password})
         db.commit()
     else:
-        return render_template("login.html", message = "Username already exists")
+        return render_template("index.html", message = "Username already exists")
 
     return render_template("success.html", message = "SUCCESS, You are now able to log in with your provided Data")
 
