@@ -5,7 +5,8 @@
 {%endblock%}
 
 {%block body%}
-    <h1>Here you can Login!</h1>
+    <h1>{{message}}</h1>
+    <h1>Please Login!</h1>
 
     <form action="{{ url_for('login_success') }}" method="post">
         <input type="text" name="username" placeholder="Name">

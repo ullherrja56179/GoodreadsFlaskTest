@@ -5,14 +5,14 @@
 {%endblock%}
 
 {%block body%}
-    <h1>Starting Page!</h1>
+    <h1>Welcome, what do you want to do?</h1>
 
     <form action="{{ url_for('register') }}" method="post">
-        <button>New Account</button>
+        <button class="new">New Account</button>
     </form>
 
     <form action="{{ url_for('login')}}" method="post">
-        <button>Login</button>
+        <button class="login">Login</button>
     </form>
 {%endblock%}
 

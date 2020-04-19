@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <h2>Notes</h2>
+    <h2>Notes for user {{user}}</h2>
     <ul>
         {% for note in notes %}
             <li>{{ note }}</li>

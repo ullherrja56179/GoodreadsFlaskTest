@@ -1,0 +1,13 @@
+h1 {
+    color: darkgreen;
+    font-style: arial;
+}
+.new {
+    background-color: red;
+}
+.login {
+    background-color: green;
+}
+body {
+    color: lightgrey;
+}
