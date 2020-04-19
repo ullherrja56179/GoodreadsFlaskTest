@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{%endblock%}
+
+{%block body%}
+    <h1>Here you can Register yourself!</h1>
+
+    <form action="{{ url_for('success') }}" method="post">
+        <input type="text" name="username" placeholder="Name">
+        <input type="password" name="password" placeholder="Password">
+        <button>Submit</button>
+    </form>
+{%endblock%}
+
+{%block footer%}
+    <h1>Thanks for visiting</h1>
+{%endblock%}
