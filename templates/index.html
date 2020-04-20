@@ -6,17 +6,12 @@
 
 {%block body%}
     <h1>{{message}}</h1>
-    <h1>What do you want to do?</h1>
-
-    <form action="{{ url_for('register') }}" method="post">
-        <button class="new">New Account</button>
-    </form>
-
-    <form action="{{ url_for('login')}}" method="post">
-        <button class="login">Login</button>
-    </form>
+    <h2>Once you are registert you will be able to see
+        and leave reviews for books.
+        So please register or (if already registered) log in!
+    </h2>
 {%endblock%}
 
 {%block footer%}
-    <h1>Thanks for visiting</h1>
+    <h2></h2>
 {%endblock%}

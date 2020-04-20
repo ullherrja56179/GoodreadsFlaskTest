@@ -1,2 +1,3 @@
-# project1
-CS50 Project1 -> using Python Flask etc.
+# Project 1
+
+Web Programming with Python and JavaScript
