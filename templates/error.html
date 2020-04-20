@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    ERROR
+{%endblock%}
+
+{%block body%}
+    <h1>{{message}}</h1>
+{%endblock%}
+
+{%block footer%}
+    <form class="" action="{{ url_for('logout') }}" method="post">
+        <button class="login">LOGOUT</button>
+    </form>
+    <h1>Thanks for visiting</h1>
+{%endblock%}

@@ -9,6 +9,14 @@
     <h2>Once you are registert you will be able to see
         and leave reviews for books.
         So please register or (if already registered) log in!
+
+        <form action="{{ url_for('register') }}" method="post">
+            <button class="new">Register</button>
+        </form>
+
+        <form action="{{ url_for('login')}}" method="post">
+            <button type="login">LogIn</button>
+        </form>
     </h2>
 {%endblock%}
 
