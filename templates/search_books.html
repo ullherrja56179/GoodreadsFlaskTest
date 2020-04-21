@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Search for Books!
+{%endblock%}
+
+{%block body%}
+    <h1>Hello</h1>
+    <form action="{{ url_for('search') }}" method="post">
+        <input type="text" name="isbn" placeholder="Type in ISBN">
+        <input type="text" name="author" placeholder="Type in Author">
+        <input type="text" name="title" placeholder="Title">
+        <input type="text" name="year" placeholder="Type in Year">
+        <button>SEARCH</button>
+    </form>
+{%endblock%}
+
+{%block footer%}
+    <h1>Goodbye</h1>
+{%endblock%}

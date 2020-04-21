@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
         <style media="screen">
             h1 {
                 color: darkgreen;
@@ -30,6 +31,8 @@
         {%block body%}
         {%endblock%}
 
-        {%block footer%}{%endblock%}
+        <form action="{{url_for('logout')}}" method="post">
+            <button>LOGOUT</button>
+        </form>
     </body>
 </html>

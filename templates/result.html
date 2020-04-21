@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Results
+{%endblock%}
+
+{%block body%}
+    <form method="post">
+        {% for book in books %}
+        <button value="{{book.id}}">ISBN: {{book.isbn}} from {{book.author}}. Title:{{book.title}}. Year:{{book.year}}</button>
+        {% endfor %}
+    </form>
+{%endblock%}
+
+{%block footer%}
+    <h1>Goodbye</h1>
+{%endblock%}
