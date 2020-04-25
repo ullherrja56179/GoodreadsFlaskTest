@@ -34,7 +34,7 @@ def main():
     for eintrag in review:
         print(eintrag)
 
-
+#SELECT * FROM books_1 JOIN review ON review.book_id = books_1.id;
 
 if __name__ == "__main__":
     main()
