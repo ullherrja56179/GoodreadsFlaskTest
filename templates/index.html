@@ -9,15 +9,23 @@
     <h2>Once you are registert you will be able to see
         and leave reviews for books.
         So please register or (if already registered) log in!
-
-        <form action="{{ url_for('register') }}" method="post">
-            <button class="register">Register</button>
-        </form>
-
-        <form action="{{ url_for('login')}}" method="post">
-            <button class="login">LogIn</button>
-        </form>
     </h2>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3">
+                <form action="{{ url_for('register') }}" method="post">
+                    <button class="register">Register</button>
+                </form>
+                <form action="{{ url_for('login')}}" method="post">
+                    <button class="login">LogIn</button>
+                </form>
+            </div>
+            <div class="col-sm-9">
+                <img src="https://www.maria-laach.de/assets/components/phpthumbof/cache/bibliothek_buecher.9ab133464b0fb3f97633425a63672a54.jpg" width="100%">
+            </div>
+        </div>
+    </div>
 {%endblock%}
 
 {%block footer%}
