@@ -1,15 +1,17 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Results
+    Choose a Book!
 {%endblock%}
 
 {%block body%}
-    <form method="post">
-        {% for book in books %}
-        <button value="{{book.id}}">ISBN: {{book.isbn}} from {{book.author}}. Title:{{book.title}}. Year:{{book.year}}</button>
-        {% endfor %}
-    </form>
+    <div class="container-fluid">
+        <form action="{{ url_for('info') }}" method="post">
+            {% for book in books %}
+            <button name="id" value="{{book.id}}">ISBN: {{book.isbn}} from {{book.author}}. Title:{{book.title}}. Year:{{book.year}}</button>
+            {% endfor %}
+        </form>
+    </div>
 {%endblock%}
 
 {%block footer%}

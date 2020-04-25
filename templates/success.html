@@ -5,7 +5,42 @@
 {%endblock%}
 
 {%block body%}
-    <h1>{{ message }}</h1>
+    <h1>Here are your Infos</h1>
+
+    <!-- <form method="post">
+        <div class="container-fluid">
+            <div class="row" name="isbn">
+                <h2>ISBN: {{isbn}}</h2>
+            </div>
+            <div class="row">
+                <h2>AUTHOR: {{author}}</h2>
+            </div>
+            <div class="row">
+                <h2>YEAR: {{year}}</h2>
+            </div>
+            <div class="row">
+                <h2>TITLE: {{title}}</h2>
+            </div>
+        </div>
+    </form> -->
+
+        <!-- <div>
+            {%for review in reviews%}
+
+            {%endfor%}
+        </div> -->
+
+        {{message}}
+        {%for everything in review%}
+            <p>{{everything.rev}}</p>
+        {%endfor%}
+
+        <form action="{{url_for('add_review')}}" method="post">
+            <input type="text" name="review" placeholder="Write a review">
+            <div>
+                <button name="id" value="{{id}}">Submit Review</button>
+            </div>
+        </form>
 {%endblock%}
 
 {%block footer%}

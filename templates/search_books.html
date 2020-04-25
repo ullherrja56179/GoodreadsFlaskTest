@@ -1,18 +1,31 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Search for Books!
+    Search a Book!
 {%endblock%}
 
 {%block body%}
+    {{message}}
     <h1>Hello</h1>
-    <form action="{{ url_for('search') }}" method="post">
-        <input type="text" name="isbn" placeholder="Type in ISBN">
-        <input type="text" name="author" placeholder="Type in Author">
-        <input type="text" name="title" placeholder="Title">
-        <input type="text" name="year" placeholder="Type in Year">
-        <button>SEARCH</button>
-    </form>
+        <form action="{{ url_for('search') }}" method="post">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" name="isbn" placeholder="Type in ISBN" width="100%">
+                    </div>
+                    <div class="col-12">
+                        <input type="text" name="author" placeholder="Type in Author">
+                    </div>
+                    <div class="col-12">
+                        <input type="text" name="title" placeholder="Title">
+                    </div>
+                    <div class="col-12">
+                        <input type="text" name="year" placeholder="Type in Year">
+                    </div>
+                </div>
+            </div>
+                <button class="register">Submit</button>
+        </form>
 {%endblock%}
 
 {%block footer%}

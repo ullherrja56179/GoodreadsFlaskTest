@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, session, render_template, request
+from flask import Flask, session, render_template, request, jsonify
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -26,6 +26,32 @@ Session(app)
 engine = create_engine(("postgresql:///mydb"))
 db = scoped_session(sessionmaker(bind=engine))
 
+class Book():
+
+    def __init__(self, id, isbn, author, title, year):
+        self.id = id
+        self.isbn = isbn
+        self.author = author
+        self.title = title
+        self.year = year
+
+        self.reviews = []
+
+    def getInfo(self):
+        infostring = ("->" + str(self.id) + "\n" + "Autor: " + self.author + "\n" + "Title: " + self.title + "ISBN: " + self.isbn + "\n" + "YEAR: " + self.year)
+        # for eintrag in self.reviews:
+        #     infostring = infostring + "\n" + eintrag
+        return infostring
+
+    def addReview(self, rev):
+        self.reviews.append(rev)
+        Review.book_id = self.id
+
+
+class Review():
+    def __init__(self, review):
+        self.review = review
+
 
 @app.route("/")
 def index():
@@ -33,9 +59,12 @@ def index():
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
-    return render_template("register.html")
+    if session.get("loggedin"):
+        return render_template("search_books.html", message = "You are logged in, seach a book!")
+    else:
+        return render_template("register.html")
 
-@app.route("/register_suc", methods=["POST"])
+@app.route("/register_good", methods=["POST"])
 def reg_success():
 
     username = request.form.get("username")
@@ -55,7 +84,7 @@ def login():
     else:
         return render_template("search_books.html")
 
-@app.route("/login_suc", methods=["POST"])
+@app.route("/login_good", methods=["POST"])
 def log_success():
     if(session.get("loggedin") is not False):
         return render_template("search_books.html")
@@ -66,17 +95,25 @@ def log_success():
         if (db.execute("SELECT * FROM users WHERE (username=:username)", {"username":username}).rowcount == 0):
             return render_template("register.html", message="User doesn't seem to exist! Please Register")
         else:
+            users = db.execute("SELECT * FROM users WHERE (username=:username) AND (password=:password)", {"username":username, "password":password}).fetchone()
+            vals = users.values()
+            id = vals[0]
+            session["user_id"] = id
             session["user"] = username
             session["loggedin"] = True
-            return render_template("search_books.html")
+            username = session.get("user")
+            id = session.get("user_id")
+            message = (f"Hello {username} with id {id}")
+            return render_template("search_books.html", message = message)
 
 @app.route("/logout", methods=["POST"])
 def logout():
     session["loggedin"] = False
     session["username"] = None
+    session["user_id"] = None
     return render_template("index.html", message="You are now logged out!")
 
-@app.route("/isbn", methods=["POST"])
+@app.route("/books", methods=["POST"])
 def search():
     isbn = request.form.get("isbn")
     isbn = f"%{isbn}%"
@@ -87,4 +124,33 @@ def search():
     year = request.form.get("year")
     year = f"%{year}%"
     books = db.execute("SELECT * FROM books_1 WHERE isbn LIKE :isbn AND author LIKE :author AND title LIKE :title AND year LIKE :year LIMIT 20", {"isbn":isbn, "author":author, "title":title, "year":year}).fetchall()
-    return render_template("result.html", books = books)
+    if books:
+        return render_template("result.html", books = books)
+    else:
+        return render_template("error.html", message = "No Books found")
+
+@app.route("/book_infos", methods=["POST", "GET"])
+def info():
+    id = request.form.get("id")
+    book = db.execute("SELECT * FROM books_1 WHERE id=:id", {"id":id}).fetchone()
+    mybook = Book(book.id, book.isbn, book.author, book.title, book.year)
+    review = db.execute("SELECT * FROM review WHERE book_id=:id", {"id":mybook.id}).fetchall()
+    message = mybook.getInfo()
+    return render_template("success.html", message = message, review = review, id=mybook.id)
+
+@app.route("/book_reviews",  methods=["POST"])
+def add_review():
+    id = request.form.get("id")
+    new_review = request.form.get("review")
+    book = db.execute("SELECT * FROM books_1 WHERE id=:id", {"id":id}).fetchone()
+    mybook = Book(book.id, book.isbn, book.author, book.title, book.year)
+    user_id = session.get("user_id")
+    review = db.execute("SELECT * FROM review WHERE book_id=:id", {"id":mybook.id}).fetchall()
+    if(db.execute("SELECT * FROM review WHERE user_id=:user_id", {"user_id":user_id}).rowcount is not 0):
+        return render_template("error.html", message = "DID ONE ALREADY")
+    else:
+        db.execute("INSERT INTO review (rev, book_id, user_id) VALUES (:bewertung, :book_id, :user_id)", {"bewertung":new_review, "book_id":mybook.id, "user_id":user_id})
+        db.commit()
+        message = mybook.getInfo()
+        review = db.execute("SELECT * FROM review").fetchall()
+        return render_template("success.html", message = message, review = review, id=mybook.id)
