@@ -53,6 +53,8 @@ class Review():
         self.review = review
 
 
+review_counter = 0
+
 @app.route("/")
 def index():
     return render_template("index.html", message="Welcome to my Review Page!")
@@ -146,11 +148,12 @@ def add_review():
     mybook = Book(book.id, book.isbn, book.author, book.title, book.year)
     user_id = session.get("user_id")
     review = db.execute("SELECT * FROM review WHERE book_id=:id", {"id":mybook.id}).fetchall()
-    if(db.execute("SELECT * FROM review WHERE user_id=:user_id", {"user_id":user_id}).rowcount is not 0):
-        return render_template("error.html", message = "DID ONE ALREADY")
+    if(db.execute("SELECT * FROM review WHERE user_id=:user_id AND book_id=:book_id", {"user_id":user_id, "book_id":mybook.id}).rowcount is not 0):
+        return render_template("error.html", message = "You Already submitted a Review!")
     else:
         db.execute("INSERT INTO review (rev, book_id, user_id) VALUES (:bewertung, :book_id, :user_id)", {"bewertung":new_review, "book_id":mybook.id, "user_id":user_id})
         db.commit()
+        user = session.get("user")
         message = mybook.getInfo()
-        review = db.execute("SELECT * FROM review").fetchall()
-        return render_template("success.html", message = message, review = review, id=mybook.id)
+        review = db.execute("SELECT * FROM review WHERE book_id=:book_id", {"book_id":mybook.id}).fetchall()
+        return render_template("success.html", message = message, name = user, review = review, id=mybook.id)

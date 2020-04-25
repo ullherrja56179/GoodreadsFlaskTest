@@ -32,7 +32,9 @@
 
         {{message}}
         {%for everything in review%}
-            <p>{{everything.rev}}</p>
+            <ul>
+                <li>--> {{everything.rev}}</li>
+            </ul>
         {%endfor%}
 
         <form action="{{url_for('add_review')}}" method="post">
