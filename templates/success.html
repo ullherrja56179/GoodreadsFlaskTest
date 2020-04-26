@@ -31,11 +31,13 @@
         </div> -->
 
         {{message}}
-        {%for everything in review%}
+        {%for revs in review%}
             <ul>
-                <li>--> {{everything.rev}}</li>
+                <li>--> {{revs.rev}} by {{revs.username}}</li>
             </ul>
         {%endfor%}
+
+        {{infos}}
 
         <form action="{{url_for('add_review')}}" method="post">
             <input type="text" name="review" placeholder="Write a review">

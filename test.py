@@ -1,5 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+import requests
+import json
+from jsonpath_rw import parse
 
 engine = create_engine("postgresql:///mydb")
 db = scoped_session(sessionmaker(bind = engine))
@@ -33,6 +36,31 @@ def main():
     review = db.execute("SELECT * FROM review").fetchall()
     for eintrag in review:
         print(eintrag)
+
+    username = input("Username: ")
+    password = input("password: ")
+    users = db.execute("SELECT * FROM users WHERE (username=:username) AND (password=:password)",{"username":username, "password":password}).fetchone()
+    print(users.id, users.username)
+
+    id = 9
+    review = db.execute("SELECT * FROM review JOIN users ON users.id=review.user_id WHERE book_id='9'").fetchall()
+    print(review)
+    for eintrag in review:
+        print(eintrag.username, eintrag.rev)
+
+    # import requests
+    # isbns = db.execute("SELECT isbn FROM books_1").fetchmany(5)
+    # print(isbns)
+    # isbns.pop(0)
+    # for isbn in isbns:
+    #     isbn_get = isbn[0]
+    #     print(isbn_get)
+    #     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key":"vkWoJEKsUDSL5TiKqfIQ", "isbns":isbn_get})
+    #     blubb = res.json()
+    #     result = blubb['books']
+    #     json = result[0]
+    #     print(json)
+    #     print(json['isbn'], json['ratings_count'])
 
 #SELECT * FROM books_1 JOIN review ON review.book_id = books_1.id;
 

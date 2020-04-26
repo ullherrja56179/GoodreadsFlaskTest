@@ -28,32 +28,43 @@ db = scoped_session(sessionmaker(bind=engine))
 
 class Book():
 
-    def __init__(self, id, isbn, author, title, year):
+    def __init__(self, id, isbn, author, title, year, rev_count, avg_rating, rat_count):
         self.id = id
         self.isbn = isbn
         self.author = author
         self.title = title
         self.year = year
+        self.rev_count = rev_count
+        self.avg_rating = avg_rating
+        self.rat_count = rat_count
 
         self.reviews = []
 
     def getInfo(self):
         infostring = ("->" + str(self.id) + "\n" + "Autor: " + self.author + "\n" + "Title: " + self.title + "ISBN: " + self.isbn + "\n" + "YEAR: " + self.year)
-        # for eintrag in self.reviews:
-        #     infostring = infostring + "\n" + eintrag
         return infostring
 
-    def addReview(self, rev):
-        self.reviews.append(rev)
-        Review.book_id = self.id
+    def getCounts(self):
+        counts = ("Avg. Rating: " + str(self.avg_rating) + "Rating-Count: " + str(self.rat_count) + "Review-Count: " + str(self.rev_count))
+        return counts
 
 
-class Review():
-    def __init__(self, review):
-        self.review = review
+class User():
+
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+def getGoodReads(isbn):
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key":"vkWoJEKsUDSL5TiKqfIQ", "isbns":isbn})
+    helper = res.json()
+    result = helper['books']
+    json = result[0]
+    return json
 
 
-review_counter = 0
+books_list = []
 
 @app.route("/")
 def index():
@@ -97,14 +108,11 @@ def log_success():
         if (db.execute("SELECT * FROM users WHERE (username=:username)", {"username":username}).rowcount == 0):
             return render_template("register.html", message="User doesn't seem to exist! Please Register")
         else:
-            users = db.execute("SELECT * FROM users WHERE (username=:username) AND (password=:password)", {"username":username, "password":password}).fetchone()
-            vals = users.values()
-            id = vals[0]
-            session["user_id"] = id
+            user = db.execute("SELECT * FROM users WHERE (username=:username) AND (password=:password)",
+                {"username":username, "password":password}).fetchone()
+            session["user_id"] = user.id
             session["user"] = username
             session["loggedin"] = True
-            username = session.get("user")
-            id = session.get("user_id")
             message = (f"Hello {username} with id {id}")
             return render_template("search_books.html", message = message)
 
@@ -113,6 +121,7 @@ def logout():
     session["loggedin"] = False
     session["username"] = None
     session["user_id"] = None
+    books_list = []
     return render_template("index.html", message="You are now logged out!")
 
 @app.route("/books", methods=["POST"])
@@ -125,7 +134,8 @@ def search():
     title = f"%{title}%"
     year = request.form.get("year")
     year = f"%{year}%"
-    books = db.execute("SELECT * FROM books_1 WHERE isbn LIKE :isbn AND author LIKE :author AND title LIKE :title AND year LIKE :year LIMIT 20", {"isbn":isbn, "author":author, "title":title, "year":year}).fetchall()
+    books = db.execute("SELECT * FROM books_1 WHERE isbn LIKE :isbn AND author LIKE :author AND title LIKE :title AND year LIKE :year LIMIT 20",
+                {"isbn":isbn, "author":author, "title":title, "year":year}).fetchall()
     if books:
         return render_template("result.html", books = books)
     else:
@@ -135,25 +145,28 @@ def search():
 def info():
     id = request.form.get("id")
     book = db.execute("SELECT * FROM books_1 WHERE id=:id", {"id":id}).fetchone()
-    mybook = Book(book.id, book.isbn, book.author, book.title, book.year)
-    review = db.execute("SELECT * FROM review WHERE book_id=:id", {"id":mybook.id}).fetchall()
+    json_string = getGoodReads(book.isbn)
+    rev_count = json_string['reviews_count']
+    avg_rating = json_string['average_rating']
+    ratings_count = json_string['ratings_count']
+    mybook = Book(book.id, book.isbn, book.author, book.title, book.year, rev_count, avg_rating, ratings_count)
+    books_list.append(mybook)
+    review = db.execute("SELECT * FROM review JOIN users ON users.id=review.user_id WHERE book_id=:id", {"id":mybook.id}).fetchall()
     message = mybook.getInfo()
-    return render_template("success.html", message = message, review = review, id=mybook.id)
+    return render_template("success.html", message = message, review = review, id=mybook.id, infos = mybook.getCounts())
 
 @app.route("/book_reviews",  methods=["POST"])
 def add_review():
-    id = request.form.get("id")
+    mybook = books_list[-1]
     new_review = request.form.get("review")
-    book = db.execute("SELECT * FROM books_1 WHERE id=:id", {"id":id}).fetchone()
-    mybook = Book(book.id, book.isbn, book.author, book.title, book.year)
     user_id = session.get("user_id")
-    review = db.execute("SELECT * FROM review WHERE book_id=:id", {"id":mybook.id}).fetchall()
+    review = db.execute("SELECT * FROM review JOIN users ON users.id=review.user_id WHERE book_id=:id", {"id":mybook.id}).fetchall()
     if(db.execute("SELECT * FROM review WHERE user_id=:user_id AND book_id=:book_id", {"user_id":user_id, "book_id":mybook.id}).rowcount is not 0):
         return render_template("error.html", message = "You Already submitted a Review!")
     else:
-        db.execute("INSERT INTO review (rev, book_id, user_id) VALUES (:bewertung, :book_id, :user_id)", {"bewertung":new_review, "book_id":mybook.id, "user_id":user_id})
+        db.execute("INSERT INTO review (rev, book_id, user_id) VALUES (:bewertung, :book_id, :user_id)",
+            {"bewertung":new_review, "book_id":mybook.id, "user_id":user_id})
         db.commit()
-        user = session.get("user")
         message = mybook.getInfo()
-        review = db.execute("SELECT * FROM review WHERE book_id=:book_id", {"book_id":mybook.id}).fetchall()
-        return render_template("success.html", message = message, name = user, review = review, id=mybook.id)
+        review = db.execute("SELECT * FROM review JOIN users ON users.id=review.user_id WHERE book_id=:id", {"book_id":mybook.id}).fetchall()
+        return render_template("success.html", message = message, review = review, id=mybook.id)
