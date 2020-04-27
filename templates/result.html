@@ -7,9 +7,13 @@
 {%block body%}
     <div class="container-fluid">
         <form action="{{ url_for('info') }}" method="post">
-            {% for book in books %}
-            <button name="id" value="{{book.id}}">ISBN: {{book.isbn}} from {{book.author}}. Title:{{book.title}}. Year:{{book.year}}</button>
-            {% endfor %}
+            <div class="btn-group-vertical">
+                {% for book in books %}
+                <button name="id" value="{{book.id}}" style="background-color: #A4B6FF;">
+                    ISBN: {{book.isbn}} from {{book.author}} --> Title:{{book.title}}
+                </button>
+                {% endfor %}
+            </div>
         </form>
     </div>
 {%endblock%}

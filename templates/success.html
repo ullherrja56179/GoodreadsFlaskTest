@@ -5,45 +5,60 @@
 {%endblock%}
 
 {%block body%}
-    <h1>Here are your Infos</h1>
+    <h1 style="text-align: center;">Here are your Infos</h1>
 
-    <!-- <form method="post">
-        <div class="container-fluid">
-            <div class="row" name="isbn">
-                <h2>ISBN: {{isbn}}</h2>
-            </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">ISBN</th>
+          <th scope="col">AUTHOR</th>
+          <th scope="col">TITLE</th>
+          <th scope="col">YEAR</th>
+          <th scope="col">REVIEW COUNT</th>
+          <th scope="col">AVG RATING</th>
+          <th scope="col">RATING COUNT</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>{{book.isbn}}</th>
+          <td>{{book.author}}</td>
+          <td>{{book.title}}</td>
+          <td>{{book.year}}</td>
+          <td>{{book.rev_count}}</td>
+          <td>{{book.avg_rating}}</td>
+          <td>{{book.rat_count}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+        <div class="container">
             <div class="row">
-                <h2>AUTHOR: {{author}}</h2>
-            </div>
-            <div class="row">
-                <h2>YEAR: {{year}}</h2>
-            </div>
-            <div class="row">
-                <h2>TITLE: {{title}}</h2>
+                {%for revs in review%}
+                <div class="col">
+                    <div class="card bg-light mb-3" style="width: 18rem;">
+                        <div class="card-body" style="background-color: lightgrey;">
+                          <h5 class="card-title">Review by: {{revs.username}}</h5>
+                          <p class="card-text">{{revs.rev}}</p>
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
             </div>
         </div>
-    </form> -->
-
-        <!-- <div>
-            {%for review in reviews%}
-
-            {%endfor%}
-        </div> -->
-
-        {{message}}
-        {%for revs in review%}
-            <ul>
-                <li>--> {{revs.rev}} by {{revs.username}}</li>
-            </ul>
-        {%endfor%}
-
-        {{infos}}
 
         <form action="{{url_for('add_review')}}" method="post">
-            <input type="text" name="review" placeholder="Write a review">
+            <!-- <input type="text" name="review" placeholder="Write a review">
             <div>
                 <button name="id" value="{{id}}">Submit Review</button>
+            </div> -->
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Review</span>
+              </div>
+              <textarea class="form-control" aria-label="With textarea" name="review" placeholder="Write a Review"></textarea>
             </div>
+            <button name="id" value="{{id}}">Submit Review</button>
         </form>
 {%endblock%}
 

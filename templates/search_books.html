@@ -6,26 +6,34 @@
 
 {%block body%}
     {{message}}
-    <h1>Hello</h1>
-        <form action="{{ url_for('search') }}" method="post">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <input type="text" name="isbn" placeholder="Type in ISBN" width="100%">
-                    </div>
-                    <div class="col-12">
-                        <input type="text" name="author" placeholder="Type in Author">
-                    </div>
-                    <div class="col-12">
-                        <input type="text" name="title" placeholder="Title">
-                    </div>
-                    <div class="col-12">
-                        <input type="text" name="year" placeholder="Type in Year">
-                    </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <form action="{{url_for('search')}}" method="post">
+                        <div class="form-group">
+                            <!-- <label for="isbn">ISBN</label> -->
+                            <input type="text" class="form-control" id="isbn" name="isbn" placeholder="ISBN">
+                            <!-- <label for="author">AUTHOR</label> -->
+                            <input type="text" class="form-control" id="author" name="author" placeholder="Author">
+                            <!-- <label for="title">TITLE</label> -->
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Title">
+                            <!-- <label for="year">YEAR</label> -->
+                            <input type="text" class="form-control" id="year" name="year" placeholder="Year">
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary">Search for Books</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-6">
+                    <img src="https://cmkt-image-prd.freetls.fastly.net/0.1.0/ps/1345872/910/606/m2/fpnw/wm1/kpgfzej47ojqls7icrnppf2i6okj7vzxkscocr04wm2a1dyqdra1krmr0jt1q4wx-.jpg?1465315512&s=ccfb38ad3096d4ac6a1fb07f45ad3282" width="100%">
                 </div>
             </div>
-                <button class="submit">Submit</button>
-        </form>
+        </div>
+
+        <h4>You don't need to Type in the whole title</h4>
+        <h4>Please reminde that for now this is <span style="border-bottom: 1px solid black; color: red;">casesensitive</span> </h4>
 {%endblock%}
 
 {%block footer%}

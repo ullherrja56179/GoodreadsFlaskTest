@@ -1,28 +1,29 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Register
+    SearchBooks
 {%endblock%}
 
 {%block body%}
-    <h1>{{message}}</h1>
-    <h2>Once you are registert you will be able to see
-        and leave reviews for books.
-        So please register or (if already registered) log in!
-    </h2>
+    {{message}}
 
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
-            <div class="col-sm-3">
-                <form action="{{ url_for('register') }}" method="post">
-                    <button class="register">Register</button>
-                </form>
-                <form action="{{ url_for('login')}}" method="post">
-                    <button class="login">LogIn</button>
+            <div class="col-sm-6">
+                <form action="{{url_for('log_success')}}" method="post">
+                    <div class="form-group">
+                        <label for="Username">Username</label>
+                        <input type="text" class="form-control" id="Username" name="username" placeholder="Username">
+                        <label for="Password">Password</label>
+                        <input type="password" class="form-control" id="Password" name="password" placeholder="Password">
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
                 </form>
             </div>
-            <div class="col-sm-9">
-                <img src="https://www.maria-laach.de/assets/components/phpthumbof/cache/bibliothek_buecher.9ab133464b0fb3f97633425a63672a54.jpg" width="100%">
+            <div class="col-sm-6">
+                <img src="https://cmkt-image-prd.freetls.fastly.net/0.1.0/ps/1345872/910/606/m2/fpnw/wm1/kpgfzej47ojqls7icrnppf2i6okj7vzxkscocr04wm2a1dyqdra1krmr0jt1q4wx-.jpg?1465315512&s=ccfb38ad3096d4ac6a1fb07f45ad3282" width="100%">
             </div>
         </div>
     </div>

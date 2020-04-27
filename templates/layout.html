@@ -2,54 +2,89 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
-        <style media="screen">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script><style media="screen">
+            table, td, th{
+                border: 1px solid black;
+                border-collapse: collapse;
+                text-align: left;
+                width: auto;
+            }
             body {
-                align-content: center;
-                background: lightgrey;
+                background: lightblue;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
             }
-            h1 {
-                color: darkgreen;
-                font-style: arial;
-            }
-            .logout {
-                background-color: red;
-                width: 100%;
-            }
-            .login {
-                background-color: green;
-                width: 100%;
-                height: 200px;
-            }
-            .register {
-                background-color: lightgreen;
-                width: 100%;
-                height: 200px;
-            }
-            .submit {
-                background-color: black;
-                widht: 75%;
-                height: 50px;
-                color: white;
+            h4 {
+                text-align: center;
             }
             button {
                 background-color: lightblue;
                 font-size: 20px;
                 width: 100%;
             }
+            button:hover {
+                box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+            }
+            ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                background-color: black;
+            }
+            li {
+                float: left;
+            }
+            a {
+                display: block;
+                color: white;
+                text-align: center;
+                padding: 14px;
+            }
         </style>
-
         <title>{% block title%}{%endblock%}</title>
     </head>
     <body>
+
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-3">
+            <div class="container">
+                <a href="#" class="navbar-brand mr-3">BooksReview</a>
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav">
+                        <a href="{{url_for('index')}}" class="nav-item nav-link active">Home</a>
+                        <a href="{{url_for('log_success')}}" class="nav-item nav-link">Search Book</a>
+                    </div>
+                    <div class="navbar-nav ml-auto">
+                        <a href="{{url_for('register')}}" class="nav-item nav-link">Register</a>
+                        <a href="{{url_for('logout')}}" class="nav-item nav-link">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
         {%block header%}{%endblock%}
 
         {%block body%}
         {%endblock%}
 
-        <form action="{{url_for('logout')}}" method="post">
-            <button class="logout">Logout</button>
-        </form>
+        {%if info%}
+        <div class="alert alert-success" role="alert">
+            {{info}}
+        </div>
+        {%endif%}
+
+        {%if alert%}
+        <div class="alert alert-danger" role="alert">
+            {{alert}}
+        </div>
+        {%endif%}
     </body>
 </html>
