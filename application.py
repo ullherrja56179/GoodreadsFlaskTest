@@ -14,8 +14,8 @@ import requests
 app = Flask(__name__)
 
 # Check for environment variable
-# if not os.getenv("DATABASE_URL"):
-#     raise RuntimeError("DATABASE_URL is not set")
+if not os.getenv("DATABASE_URL"):
+    raise RuntimeError("DATABASE_URL is not set")
 
 # Configure session to use filesystem
 app.config["SESSION_PERMANENT"] = False
@@ -23,7 +23,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Set up database
-engine = create_engine(("postgresql:///mydb"))
+engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 class Book():
@@ -41,7 +41,7 @@ class Book():
         self.reviews = []
 
     def getInfo(self):
-        infostring = ("->" + str(self.id) + "\n" + "Autor: " + self.author + "\n" + "Title: " + self.title + "ISBN: " + self.isbn + "\n" + "YEAR: " + self.year)
+        infostring = ("->" + str(self.id) + "\n" + "Autor: " + self.author + "\n" + "Title: " + self.title + "ISBN: " + self.isbn + "\n" + "YEAR: " + str(self.year))
         return infostring
 
     def getCounts(self):
@@ -147,10 +147,8 @@ def search():
     author = f"%{author}%"
     title = request.form.get("title")
     title = f"%{title}%"
-    year = request.form.get("year")
-    year = f"%{year}%"
-    books = db.execute("SELECT * FROM books_1 WHERE isbn LIKE :isbn AND author LIKE :author AND title LIKE :title AND year LIKE :year LIMIT 20",
-                {"isbn":isbn, "author":author, "title":title, "year":year}).fetchall()
+    books = db.execute("SELECT * FROM books WHERE isbn LIKE :isbn AND author LIKE :author AND title LIKE :title LIMIT 20",
+                {"isbn":isbn, "author":author, "title":title}).fetchall()
     if books:
         return render_template("result.html", books = books)
     else:
@@ -159,7 +157,7 @@ def search():
 @app.route("/book_infos", methods=["POST", "GET"])
 def info():
     id = request.form.get("id")
-    book = db.execute("SELECT * FROM books_1 WHERE id=:id", {"id":id}).fetchone()
+    book = db.execute("SELECT * FROM books WHERE id=:id", {"id":id}).fetchone()
     json_string = getGoodReads(book.isbn)
     rev_count = json_string['work_text_reviews_count']
     avg_rating = json_string['average_rating']
