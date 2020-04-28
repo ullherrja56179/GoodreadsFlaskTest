@@ -174,13 +174,14 @@ def info():
 def add_review():
     mybook = books_list[-1]
     new_review = request.form.get("review")
+    rating = request.form.get("rating")
     user_id = session.get("user_id")
     review = db.execute("SELECT * FROM review JOIN users ON users.id=review.user_id WHERE book_id=:id", {"id":mybook.id}).fetchall()
     if(db.execute("SELECT * FROM review WHERE user_id=:user_id AND book_id=:book_id", {"user_id":user_id, "book_id":mybook.id}).rowcount is not 0):
         return render_template("error.html", alert = "You Already submitted a Review!")
     else:
-        db.execute("INSERT INTO review (rev, book_id, user_id) VALUES (:bewertung, :book_id, :user_id)",
-            {"bewertung":new_review, "book_id":mybook.id, "user_id":user_id})
+        db.execute("INSERT INTO review (rev, book_id, user_id, rating) VALUES (:bewertung, :book_id, :user_id, :rating)",
+            {"bewertung":new_review, "book_id":mybook.id, "user_id":user_id, "rating":rating})
         db.commit()
         review = db.execute("SELECT * FROM review JOIN users ON users.id=review.user_id WHERE book_id=:id", {"id":mybook.id}).fetchall()
         return render_template("success.html", book = mybook, review = review, id=mybook.id, infos=mybook.getCounts())

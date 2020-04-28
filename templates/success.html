@@ -7,59 +7,108 @@
 {%block body%}
     <h1 style="text-align: center;">Here are your Infos</h1>
 
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">ISBN</th>
-          <th scope="col">AUTHOR</th>
-          <th scope="col">TITLE</th>
-          <th scope="col">YEAR</th>
-          <th scope="col">REVIEW COUNT</th>
-          <th scope="col">AVG RATING</th>
-          <th scope="col">RATING COUNT</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>{{book.isbn}}</th>
-          <td>{{book.author}}</td>
-          <td>{{book.title}}</td>
-          <td>{{book.year}}</td>
-          <td>{{book.rev_count}}</td>
-          <td>{{book.avg_rating}}</td>
-          <td>{{book.rat_count}}</td>
-        </tr>
-      </tbody>
-    </table>
-
-        <div class="container">
-            <div class="row">
-                {%for revs in review%}
-                <div class="col">
-                    <div class="card bg-light mb-3" style="width: 18rem;">
-                        <div class="card-body" style="background-color: lightgrey;">
-                          <h5 class="card-title">Review by: {{revs.username}}</h5>
-                          <p class="card-text">{{revs.rev}}</p>
-                        </div>
-                    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-9">
+                <table class="table table-hover table-dark">
+                  <thead>
+                    <tr>
+                      <th scope="col">ISBN</th>
+                      <th scope="col">AUTHOR</th>
+                      <th scope="col">TITLE</th>
+                      <th scope="col">YEAR</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>{{book.isbn}}</th>
+                      <td>{{book.author}}</td>
+                      <td>{{book.title}}</td>
+                      <td>{{book.year}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+            <div class="col-3">
+                <div class="">
+                    <span class="badge badge-success">Reviews: {{book.rev_count}}</span>
                 </div>
-                {%endfor%}
+                <div class="">
+                    <span class="badge badge-success">Rating: {{book.avg_rating}}</span>
+                </div>
+                <div class="">
+                    <span class="badge badge-success">Count: {{book.rat_count}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            {%for revs in review%}
+            <div class="col", style="margin:5px; padding: 5px;">
+                <div class="flip-box">
+                 <div class="flip-box-inner">
+                   <div class="flip-box-front">
+                     <h2>Review by: {{revs.username}}</h2>
+                     <h5>Rating: {{revs.rating}} of 5</h5>
+                   </div>
+                   <div class="flip-box-back">
+                     <h2>Review:</h2>
+                     <h5>{{revs.rev}}</h5>
+                   </div>
+                 </div>
+                </div>
+            </div>
+            {%endfor%}
+        </div>
+    </div>
+
+    <form action="{{url_for('add_review')}}" method="post">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Review</span>
+          </div>
+          <textarea class="form-control" aria-label="With textarea" name="review" placeholder="Write a Review"></textarea>
+        </div>
+
+        <div class="container" style="horizontal-align: center; vertical-align: center;">
+            <div class="row">
+                <div class="col-sm-2">
+                    <h6>Rating 1 to 5</h6>
+                </div>
+                <div class="col-sm-2">
+                    <label class="container">One
+                      <input type="radio" name="rating" value="1">
+                      <span class="checkmark"></span>
+                    </label>
+                </div>
+                <div class="col-sm-2">
+                    <label class="container">Two
+                      <input type="radio" name="rating" value="2">
+                      <span class="checkmark"></span>
+                    </label>
+                </div>
+                <div class="col-sm-2">
+                    <label class="container">Three
+                      <input type="radio" name="rating" value="3">
+                      <span class="checkmark"></span>
+                    </label>
+                </div>
+                <div class="col-sm-2">
+                    <label class="container">Four
+                      <input type="radio" name="rating" value="4">
+                      <span class="checkmark"></span>
+                    </label>
+                </div>
+                <div class="col-sm-2">
+                    <label class="container">Five
+                      <input type="radio" name="rating" value="5">
+                      <span class="checkmark"></span>
+                    </label>
+                </div>
             </div>
         </div>
 
-        <form action="{{url_for('add_review')}}" method="post">
-            <!-- <input type="text" name="review" placeholder="Write a review">
-            <div>
-                <button name="id" value="{{id}}">Submit Review</button>
-            </div> -->
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Review</span>
-              </div>
-              <textarea class="form-control" aria-label="With textarea" name="review" placeholder="Write a Review"></textarea>
-            </div>
-            <button name="id" value="{{id}}">Submit Review</button>
-        </form>
+        <button name="id" value="{{id}}">Submit Review</button>
+    </form>
 {%endblock%}
 
 {%block footer%}
