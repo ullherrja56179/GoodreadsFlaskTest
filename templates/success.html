@@ -48,7 +48,9 @@
                  <div class="flip-box-inner">
                    <div class="flip-box-front">
                      <h2>Review by: {{revs.username}}</h2>
-                     <h5>Rating: {{revs.rating}} of 5</h5>
+                    {%for n in range revs.rating%}
+                        <span class="fa fa-star checked"></span>
+                    {%endfor%}
                    </div>
                    <div class="flip-box-back">
                      <h2>Review:</h2>
