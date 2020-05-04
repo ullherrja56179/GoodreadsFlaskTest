@@ -3,9 +3,16 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 import requests
 import json
 from jsonpath_rw import parse
+from werkzeug.security import check_password_hash, generate_password_hash
 
-engine = create_engine("postgresql:///mydb")
+engine = create_engine("postgres://iixnwpftseyics:5978adaa36ca766250b0280efe58fbd6f0e349467967e40e460b760b6cf382e5@ec2-54-247-103-43.eu-west-1.compute.amazonaws.com:5432/dc055c7ca8pmka")
 db = scoped_session(sessionmaker(bind = engine))
+
+class User():
+
+    def __init__(self, username, passwordhashed):
+        self.username = username
+        self.passwordhashed = passwordhashed
 
 def main():
     # username = input("Bitte username: ")
@@ -37,28 +44,50 @@ def main():
     # for eintrag in review:
     #     print(eintrag)
     #
+
+
     # username = input("Username: ")
-    # password = input("password: ")
-    # users = db.execute("SELECT * FROM users WHERE (username=:username) AND (password=:password)",{"username":username, "password":password}).fetchone()
-    # print(users.id, users.username)
+    # passw = input("password: ")
+    # password = generate_password_hash(passw)
     #
+    # if(db.execute("SELECT * FROM users WHERE (username=:username)",{"username":username}).rowcount is 0):
+    #     print("gibt es schon")
+    # else:
+    #     db.execute("INSERT INTO users (username, password) VALUES (:username, :password)", {"username":username, "password":password})
+    #     db.commit()
+    #
+    # user = User(username, password)
+    #
+    # print()
+    # username = input("username: ")
+    # password = input("Password: ")
+    # hashed = db.execute("SELECT password FROM users WHERE username:=username", {"username":username}).fetchone()
+    # print(hashed)
+    # check = check_password_hash(hashed, password)
+    #
+    # if check is True:
+    #     users = db.execute("SELECT * FROM users WHERE (username=:username)",{"username":username}).fetchone()
+    #     print(users.id, users.username)
+    # else:
+    #     print("Da ist etwas schief gelaufen")
+    #
+
+
     # id = 9
     # review = db.execute("SELECT * FROM review JOIN users ON users.id=review.user_id WHERE book_id='9'").fetchall()
     # print(review)
     # for eintrag in review:
     #     print(eintrag.username, eintrag.rev)
 
-    import requests
+    isbn = input("ISBN: ")
+    isbn = f"%{isbn}%"
+    book = db.execute("SELECT * FROM books WHERE isbn LIKE :isbn",{"isbn":isbn}).fetchone()
+    print(book)
 
-    isbn_get='0743454553'
-    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key":"vkWoJEKsUDSL5TiKqfIQ", "isbns":isbn_get})
-    blubb = res.json()
-    result = blubb['books']
-    json = result[0]
-    print(json)
-    print(json['isbn'], json['ratings_count'])
-
-#SELECT * FROM books_1 JOIN review ON review.book_id = books_1.id;
+    id = book.id
+    count = db.execute("SELECT count(id) FROM review WHERE book_id=:id", {"id":id}).fetchone()
+    avg_rating = db.execute("SELECT avg(rating) FROM review WHERE book_id=:id", {"id":id}).fetchone()
+    print(count[0], round(avg_rating[0],2))
 
 if __name__ == "__main__":
     main()

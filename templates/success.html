@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Register
+    Results
 {%endblock%}
 
 {%block body%}
@@ -9,7 +9,7 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-9">
+            <div class="col-sm-9">
                 <table class="table table-hover table-dark">
                   <thead>
                     <tr>
@@ -29,7 +29,7 @@
                   </tbody>
                 </table>
             </div>
-            <div class="col-3">
+            <div class="col-sm-3">
                 <div class="">
                     <span class="badge badge-success">Reviews: {{book.rev_count}}</span>
                 </div>
@@ -48,9 +48,7 @@
                  <div class="flip-box-inner">
                    <div class="flip-box-front">
                      <h2>Review by: {{revs.username}}</h2>
-                    {%for n in range revs.rating%}
-                        <span class="fa fa-star checked"></span>
-                    {%endfor%}
+                     <h5>Rating: {{revs.rating}} of 5</h5>
                    </div>
                    <div class="flip-box-back">
                      <h2>Review:</h2>
